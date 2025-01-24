@@ -4,16 +4,21 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '@/constants/images'
 import icons from '@/constants/icons'
 import { login } from '@/lib/appwrite'
+import { useGlobalContext } from '@/lib/global-provider'
+import { Redirect } from 'expo-router'
 
 const SignIn = () => {
 
-  const handleLogin = async () => {
-    const result = await login()
+  const { refetch, loading, isLogged } = useGlobalContext();
 
+  if (!loading && isLogged) return <Redirect href="/" />;
+
+  const handleLogin = async () => {
+    const result = await login();
     if (result) {
-      console.log("Login successfully");
+      refetch();
     } else {
-      Alert.alert('Error', 'Failed to login!')
+      Alert.alert("Error", "Failed to login");
     }
   };
   return (
